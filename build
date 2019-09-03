@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -e
+
+DOCKER_USER=catatechcn
+VERSION=0.1.0
+
+BASE_NAME=$(basename $0)
+DIR_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd ${DIR_PATH}
+
+PROJECT_NAME=${DIR_PATH##*/}
+if [[ ${PROJECT_NAME} = *-dev ]]; then
+    PROJECT_NAME=${PROJECT_NAME%-dev}
+    VERSION="latest"
+fi
+if [[ ${KCARD_RUNTIME_STAGE} != release ]]; then
+    VERSION="latest"
+fi
+
+docker build -t ${DOCKER_USER}/${PROJECT_NAME}:${VERSION} .
+docker push ${DOCKER_USER}/${PROJECT_NAME}:${VERSION}
